@@ -13,7 +13,9 @@ export class LoginDTO {
     password: string;
 
     @IsObject()
+    
     user: {
-        password: string
+        password: string,
+        id: string
     };
 }

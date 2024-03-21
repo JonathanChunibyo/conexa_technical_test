@@ -14,7 +14,7 @@ export class UsersController {
 
   @Get()
   findAll(@Query() findAllDto: UpdateUserDto) {
-    return this.usersService.findOne(findAllDto, [
+    return this.usersService.findAll(findAllDto, [
       'user.id',
       'user.name',
       'user.lastName',

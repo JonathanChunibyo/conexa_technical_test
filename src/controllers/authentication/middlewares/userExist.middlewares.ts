@@ -32,7 +32,7 @@ export class UserExistMiddleware implements NestMiddleware {
         } catch (error) {
             this.logger.error(error);
             const errorException = new BadRequestException(message.somethingWrong);
-            return res.status(500).json(errorException);
+            return res.status(500).json(errorException.getResponse());
         }
     }
 }

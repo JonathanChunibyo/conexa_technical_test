@@ -16,14 +16,14 @@ import { AuthenticationModule } from './controllers/authentication/authenticatio
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE_DB,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
       logging: true
     }),
 
     // Modules models app
     UsersModule,
 
-    // Controllers models app
+    // Modules controllers app
     AuthenticationModule,
 
   ],

@@ -1,10 +1,14 @@
+// Libraries
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
+// DTO
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+// Entities
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -15,7 +19,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -31,25 +35,9 @@ export class UsersService {
       throw new InternalServerErrorException('Error')
     }
   }
-
-  async findAll(
-    where: Record<string, any>,
-    select: string[]
-  ): Promise<User[]> {
-    return await this.userRepository.createQueryBuilder('user')
-      .select(select)
-      .where(where)
-      .getMany();
-  }
-
-  async findOne(
-    where: Record<string, any>,
-    select: string[]
-  ) {
-    return await this.userRepository.createQueryBuilder('user')
-      .select(select)
-      .where(where)
-      .getOne();
+  
+  find() {
+    return this.userRepository.createQueryBuilder('user');
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

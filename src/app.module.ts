@@ -1,9 +1,15 @@
+// Libraries
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './models/users/users.module';
+
+// Modules controllers
 import { AuthenticationModule } from './controllers/authentication/authentication.module';
 
+// Module models
+import { UsersModule } from './models/users/users.module';
+import { AuthenticationCodeModule } from './models/authentication-code/authentication-code.module';
+import { SeedersModule } from './resource/seeders/seeders.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,9 +28,13 @@ import { AuthenticationModule } from './controllers/authentication/authenticatio
 
     // Modules models app
     UsersModule,
+    AuthenticationCodeModule,
 
     // Modules controllers app
     AuthenticationModule,
+
+    // Seeders module app
+    SeedersModule,
 
   ],
   providers: [],

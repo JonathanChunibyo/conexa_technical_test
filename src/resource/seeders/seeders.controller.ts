@@ -1,4 +1,4 @@
-import { Controller, Post} from '@nestjs/common';
+import { Controller, Delete, Post} from '@nestjs/common';
 import { SeedersService } from './seeders.service';
 
 @Controller('seeders')
@@ -11,6 +11,16 @@ export class SeedersController {
   async create() {
     try {
       await this.seedersService.postData();
+      return true;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  @Delete()
+  async delete() {
+    try {
+      await this.seedersService.deleteData();
       return true;
     } catch (error) {
       return error.response;

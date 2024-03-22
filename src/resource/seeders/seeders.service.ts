@@ -32,6 +32,16 @@ export class SeedersService {
     }
   }
 
+  async deleteData() {
+    try {
+      await this.deleteUser();
+      Logger.log('Data seeded Deleted!');
+    } catch (error) {
+      Logger.error(error);
+      throw new UnauthorizedException(message.errorCompilingSeeder);
+    }
+  }
+
   async createUser() {
     const postData = [];
     for (let i = 0; i < 15; i++) {
@@ -47,4 +57,9 @@ export class SeedersService {
     const allUserCredentials = await this.userDataExporter.getUsersData(this.authenticationService, postData);
     await this.userRepository.save(allUserCredentials);
   }
+
+  async deleteUser() {
+    await this.userRepository.delete({});
+  }
+
 }

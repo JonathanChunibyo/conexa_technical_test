@@ -17,6 +17,10 @@ export class CreateUserDto {
     nickName: string;
 
     @IsString()
+    @MinLength(1)
+    email: string;
+
+    @IsString()
     @Matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/, {
        message: message.invalidPassword
     })

@@ -1,10 +1,16 @@
-import { IsObject, IsString, Matches, MinLength } from "class-validator";
+import { IsObject, IsOptional, IsString, Matches, MinLength } from "class-validator";
 import * as message from '../../../errors/messageModel.errors.json';
 
 export class LoginDTO {
     @IsString()
     @MinLength(1)
-    nickName: string;
+    @IsOptional()
+    nickName?: string;
+
+    @IsString()
+    @MinLength(1)
+    @IsOptional()
+    email?: string;
 
     @IsString()
     @Matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/, {
@@ -13,7 +19,6 @@ export class LoginDTO {
     password: string;
 
     @IsObject()
-    
     user: {
         password: string,
         id: string

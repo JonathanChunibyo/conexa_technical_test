@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/models/users/entities/user.entity";
 
 @Entity()
@@ -10,10 +10,14 @@ export class AuthenticationCode {
     @Column('text')
     code: string;
 
-    @ManyToOne(
-        () => User,
-        (user) => user.codes
-    )
-    user: User;
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'userId' })
+    userId: User;
+
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    updatedAt: Date;
 
 }

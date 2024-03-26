@@ -20,7 +20,7 @@ export class UserExistMiddleware implements NestMiddleware {
                 id = ''
             } = extractDataFromRequest;
             const queryUser = this.usersService.find();
-            const user = await queryUser.select(['user.id', 'user.name', 'user.lastName', 'user.nickName', 'user.password'])
+            const user = await queryUser.select(['user.id', 'user.name', 'user.lastName', 'user.nickName', 'user.password', 'user.email'])
                 .where('user.nickname = :nickName', { nickName })
                 .orWhere('user.email = :email', { email })
                 .orWhere('user.id = :id', { id })

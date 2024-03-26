@@ -48,8 +48,8 @@ export class SeedersService {
       const id = simpleFaker.string.uuid();
       const name = faker.person.firstName();
       const lastName = faker.person.lastName();
-      const dateDefault = faker.number.octal();
-      const nickName = `${name}${lastName}${dateDefault}`;
+      const randomNumber = faker.number.octal();
+      const nickName = `${name}${lastName}${randomNumber}`;
       const email = faker.internet.email();
       const password = faker.internet.password()
       postData.push({ id, name, lastName, nickName, email, password, isState: true });

@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { AuthenticationService } from "src/controllers/authentication/authentication.service";
+import { CreateUser } from "../interfaces/createUser.interfaces";
 
 @Injectable()
 export default class UserDataExporter {
 
-    async getUsersData(authenticationService: AuthenticationService, postData): Promise<any> {
+    async getUsersData(authenticationService: AuthenticationService, postData: Array<CreateUser>) {
         const password = await authenticationService.hashPassword(process.env.PASSWORD_DEFAULT);
         const allUserFullCredentials = [];
         for (let index = 0; index < postData.length; index++) allUserFullCredentials.push({

@@ -8,6 +8,6 @@ export class UserCredentialValidationDTO {
         name: string,
         lastName: string,
         nickName: string,
-
+        email: string,
     };
 }

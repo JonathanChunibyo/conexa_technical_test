@@ -40,7 +40,8 @@ export class AuthenticationController {
   async userCredentialValidation(@Body() userCredentialValidationDTO: UserCredentialValidationDTO) {
     const { user } = userCredentialValidationDTO;
     const code = this.authenticationService.getRandomAuthenticationCode();
-    const authenticationCode = await this.authenticationCodeService.create({ userId: user.id, code });
-    return authenticationCode;
+    await this.authenticationCodeService.create({ userId: user, code });
+    this.authenticationService.sendEmail(user.email, '',code);
+    return user.id;
   }
 }

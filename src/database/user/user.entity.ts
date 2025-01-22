@@ -1,7 +1,8 @@
 // Libraries
-import { Column } from "typeorm";
-import { BaseEntity } from '../../../common/entities/base.entity'
+import { Column, Entity } from "typeorm";
+import { BaseEntity } from '../../common/entities/base.entity'
 
+@Entity()
 export class UserEntity extends BaseEntity{
     @Column('text')
     name: string;
@@ -23,6 +24,9 @@ export class UserEntity extends BaseEntity{
     @Column('text')
     password: string;
 
-    @Column('boolean')
+    @Column({
+        type: 'boolean',
+        default: true
+    })
     isState: boolean;
 }

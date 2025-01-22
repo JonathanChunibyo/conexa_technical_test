@@ -5,14 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [
             TypeOrmModule.forRootAsync({
               useFactory: () => ({
-                type: 'mysql',
+                type: 'mariadb',
                 host: 'localhost',
                 port: 3312,
                 username: 'root',
                 password: 'root',
                 database: 'base-nest',
                 entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+                // ! ALWAYS FALSE IN PROD
                 synchronize: true,
+                autoLoadEntities: true,
+                logging: true
               }),
             }),
           ],

@@ -9,10 +9,10 @@ export class BaseEntity {
     id: string;
 
     @CreateDateColumn({ type: 'timestamp' })
-    createdAt: Date;
+    createdAt: String;
 
     @UpdateDateColumn({ type: 'timestamp' })
-    updatedAt: Date;
+    updatedAt: String;
 
     @BeforeInsert()
     generateUUID() {

@@ -1,8 +1,8 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { CreateUserCommand } from '../create-user.command/create-user.command';
-import { UserRepository } from '../../user.repository';
-import { UserCreatedEvent } from 'src/database/user/events/user-created.event/user-created.event';
-import { UserEntity } from '../../user.entity';
+import { CreateUserCommand } from '../create-user.command';
+import { UserRepository } from '../../repositories/user.repository';
+import { UserCreatedEvent } from '../../events/user-created.event';
+import { UserEntity } from '../../entities/user.entity';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {

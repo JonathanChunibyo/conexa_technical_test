@@ -2,7 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { UserDto } from 'src/database/user/user.dto';
 import { UserRepository } from '../database/user/user.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiValidateFile } from 'src/documentation/decorators/swagger-decorator';
+import { ApiValidateFile } from 'src/infrastructure/documentation/decorators/swagger-decorator';
 
 @Controller('administration-panel')
 export class AdministrationPanelController {

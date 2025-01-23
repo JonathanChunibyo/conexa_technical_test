@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 // ! ALWAYS FALSE IN PROD
                 synchronize: true,
                 autoLoadEntities: true,
-                logging: true
+                logging: false
               }),
             }),
           ],

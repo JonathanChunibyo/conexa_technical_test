@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AdministrationPanelService } from './administration-panel.service';
+import { Controller, Post, Body } from '@nestjs/common';
 import { UserDto } from 'src/database/user/user.dto';
 import { UserRepository } from '../database/user/user.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateUserCommand } from 'src/database/user/commands/create-user.command/create-user.command';
+import { ApiValidateFile } from 'src/documentation/decorators/swagger-decorator';
 
 @Controller('administration-panel')
 export class AdministrationPanelController {
@@ -13,6 +12,12 @@ export class AdministrationPanelController {
   ) {}
 
   @Post("create-user")
+  @ApiValidateFile({
+    summary: 'Create a new user',
+    description: 'This endpoint allows the creation of a new user in the system. Required data must be provided in the request body.',
+    tags: ['Users'],
+    deprecated: false
+  })
   async createUser(@Body() createUserDto: UserDto) {
     const user = this.userRepository.create(createUserDto);
     console.log(user);

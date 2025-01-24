@@ -78,3 +78,73 @@ Esta arquitectura permite el crecimiento del sistema de forma estructurada. Ejem
 ---
 ## 📌 Conclusión
 Esta arquitectura garantiza un desarrollo estructurado, modular y escalable. A largo plazo, permite un mantenimiento eficiente y reduce los costos de evolución del software. 🚀
+
+# 📌 Creación de un Módulo en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento explica cómo crear un módulo en el proyecto siguiendo Clean Architecture, utilizando el CLI de NestJS.
+
+## 🔧 Creación del Módulo
+
+Generar un nuevo módulo con:
+
+```bash
+nest generate module core/<nombre-del-modulo>
+```
+
+Ejemplo:
+
+```bash
+nest generate module core/orders
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/
+        -orders/
+            -orders.module.ts
+```
+
+## 📂 Estructura del Módulo
+
+```bash
+-src/
+    -core/orders/
+        -dto/
+        -entities/
+        -repositories/
+        -commands/
+        -events/
+        -controllers/
+        -services/
+        -orders.module.ts
+```
+
+## 📥 Importaciones y 📤 Exportaciones
+
+### **Configuración del Módulo**
+
+```typescript
+@Module({
+  controllers: [OrdersController],
+  providers: [OrdersService, OrderRepository],
+  exports: [OrdersService],
+})
+export class OrdersModule {}
+```
+
+### \*\*Uso en \*\*\`\`
+
+```typescript
+import { OrdersModule } from './core/orders/orders.module';
+
+@Module({ imports: [OrdersModule] })
+export class AppModule {}
+```
+
+## 🚀 Conclusión
+
+La creación de módulos en el proyecto facilita la escalabilidad y mantenibilidad, asegurando una estructura organizada y modular.

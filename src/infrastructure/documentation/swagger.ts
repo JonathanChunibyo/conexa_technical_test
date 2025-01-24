@@ -1,6 +1,4 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { appendFile } from 'fs';
-import { AnonymousSubject } from 'rxjs/internal/Subject';
 
 export function swaggerInit(app: any) {
   const config = new DocumentBuilder()

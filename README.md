@@ -10,6 +10,9 @@ API project that serves as API for the business model of the Base Nest project.
 2. [Nest project life cycle](#nest-project-life-cycle)
 3. [Commands](#commands)
     1. [Guard](#guard)
+    2. [Interceptor](#interceptor)
+    3. [Service](#service)
+    4. [Entity](#entity)
 
 
 ## Requirements
@@ -65,7 +68,7 @@ Once the server is listening it starts handling incoming requests, routing throu
 Allows to control access to routes or endpoints of your application. Guards are executed before a request to a given route is processed and can allow or deny access.
 
 ```bash
-nest g guard auth --no-spec
+nest g guard <nombre-del-guard> --no-spec
 ```
 @Injectable(): This decorator tells the framework that this class can be instantiated and managed by the NestJS dependency container allowing it to be injected into other classes that need it as a dependency.
 
@@ -83,3 +86,64 @@ export class AuthGuard implements CanActivate {
   }
 }
 ```
+
+## Interceptor
+
+Middleware that acts in the lifecycle of a request. It can intercept, modify and process data before and after it reaches the controller handler.
+
+```bash
+nest g interceptor <nombre-de-la-carpeta>/<nombre-del-interceptor> --flat --no-spec
+```
+
+@Injectable(): This decorator tells the framework that this class can be instantiated and managed by the NestJS dependency container allowing it to be injected into other classes that need it as a dependency.
+
+Constructor: It is mainly used to perform dependency injection as services, repositories, or any other class registered in the NestJS dependency container and to initialize variables, set defaults or perform necessary operations before the interceptor processes requests.
+
+intercept: It is the core where the logic to be executed before and/or after a request is processed by a controller is defined.
+
+- context: ExecutionContext: It provides access to the execution context of the request by obtaining information about the controller, method, request, response, and other metadata.
+
+- next: CallHandler: It represents the execution flow by returning an Observable<any> observable that represents the data that will finally be sent as a response to the client.
+
+```bash
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle();
+  }
+}
+```
+
+## Service
+
+```bash
+nest generate service <nombre-del-service> --no-spec
+```
+
+@Injectable(): This decorator indicates that this service can be instantiated and managed by the NestJS dependency container allowing it to be injected into other components such as controllers or other services.
+
+logger: Used to detail how information is recorded within the service.
+
+Methods: The methods must be detailed separately and their parameters must explain what type of data they receive to include the logic of the service, the interaction with the database and the call to other services.
+
+```bash
+@Injectable()
+export class MyNewService {
+    private readonly logger = new Logger("MyNewService");
+
+    constructor(private readonly myService: MyService) {}
+
+    async handleEntries(data: any) {
+        try {
+            const result = await this.myService.processData(data);
+            return result;
+        } catch (error) {
+            this.logger.error(error);
+            throw new InternalServerErrorException('Error occurred while processing data');
+        }
+    }
+}
+```
+
+## Entity
+

@@ -148,3 +148,104 @@ export class AppModule {}
 ## 🚀 Conclusión
 
 La creación de módulos en el proyecto facilita la escalabilidad y mantenibilidad, asegurando una estructura organizada y modular.
+
+# 📌 Documentación de Entidades en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento explica la estructura y creación de entidades en el proyecto, siguiendo Clean Architecture y utilizando `@Entity()` de TypeORM.
+
+## 🔧 Creación de una Entidad
+
+Generar una nueva entidad con:
+
+```bash
+nest generate class core/<modulo>/entities/<nombre-de-la-entidad> --no-spec
+
+```
+
+Ejemplo:
+
+```bash
+nest generate class core/orders/entities/order --no-spec
+
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos.
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/orders/
+        -entities/
+            -order/
+                -order.entity.ts
+
+
+NOTA: Se debe de eliminar la carpeta de order que esta dentro de la carpeta de entities para que solo quede el archivo natural de entity.ts.
+```
+
+## 📂 Estructura de una Entidad
+
+```typescript
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity()
+export class Order {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  customerId: string;
+
+  @Column('decimal')
+  totalAmount: number;
+
+  @Column()
+  status: string;
+}
+```
+
+## 📥 Importaciones y 📤 Exportaciones
+
+### **Uso en un Repositorio**
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Order } from '../entities/order.entity';
+
+@Injectable()
+export class OrderRepository {
+  constructor(
+    @InjectRepository(Order)
+    private readonly repository: Repository<Order>,
+  ) {}
+
+  async create(order: Partial<Order>): Promise<Order> {
+    return this.repository.save(order);
+  }
+}
+```
+
+### **Uso en un Servicio**
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { Order } from '../entities/order.entity';
+import { OrderRepository } from '../repositories/order.repository';
+
+@Injectable()
+export class OrderService {
+  constructor(private readonly orderRepository: OrderRepository) {}
+
+  async createOrder(orderData: Partial<Order>) {
+    return this.orderRepository.create(orderData);
+  }
+}
+```
+
+## 🚀 Conclusión
+
+Las entidades en este proyecto utilizan `@Entity()` de TypeORM para definir estructuras de base de datos de manera eficiente y escalable.

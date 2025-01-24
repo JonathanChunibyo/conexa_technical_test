@@ -1,0 +1,4 @@
+{
+    "comparePasswords": "Error occurred while comparing passwords. Please try again later.",
+    "hashPassword": "Error encountered while hashing the password. Please ensure the password is valid and try again."
+}

@@ -1,7 +1,5 @@
 // Libraries
-import { Repository } from 'typeorm';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from "passport-jwt";
 import * as messageError from '../constants/strategies/jwt.json';
 import { PassportStrategy } from "@nestjs/passport";

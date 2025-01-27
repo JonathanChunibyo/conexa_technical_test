@@ -8,7 +8,7 @@ import * as messageError from '../constants/services/argon2.json';
 
 @Injectable()
 export class ArgonService {
-    private readonly logger = new Logger('AuthenticationService')
+    private readonly logger = new Logger('ArgonService')
 
     async comparePasswords(password: string, hashedPassword: string): Promise<boolean> {
         try {

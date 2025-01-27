@@ -1,8 +1,13 @@
-import { Controller, Post, Body } from '@nestjs/common';
+// Libraries
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { AuthGuard } from '@nestjs/passport';
+
+// Repository
 import { UserRepository } from '../user/repositories/user.repository';
+
+// DTO
 import { UserDto } from '../user/dto/user.dto';
-import { API_OPERATION_SWAGGER } from './documentation/swagger-constant';
 
 // swagger
 import { readApiValidateField } from '../../infrastructure/documentation/command/swagger.command';
@@ -19,6 +24,7 @@ export class AdministrationPanelController {
 
   @Post("create-user")
   @ApiSwaggerResponse(readApiValidateField("create-user", controllerPath))
+  @UseGuards(AuthGuard('jwt'))
   async createUser(@Body() createUserDto: UserDto) {
     const user = this.userRepository.create(createUserDto);
     return user;

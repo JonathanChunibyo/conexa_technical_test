@@ -313,3 +313,98 @@ export class OrdersController {
 ## 🚀 Conclusión
 
 Los decoradores personalizados permiten modularidad y reutilización en el proyecto, mejorando la seguridad y organización del código.
+
+# 📌 Documentación de Queries (Repositorios) en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento explica la estructura y creación de queries en los repositorios del proyecto, siguiendo Clean Architecture y utilizando `@Repository()` de TypeORM.
+
+## 🔧 Creación de un Repositorio
+
+Generar un nuevo repositorio con:
+
+```bash
+nest generate class core/<modulo>/repositories/<nombre-del-repositorio> --no-spec --flat
+```
+
+Ejemplo:
+
+```bash
+nest generate class core/orders/repositories/order.repository --no-spec --flat
+
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos y --flat para que solo quede el archivo natural de repository.ts
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/orders/
+        -repositories/
+            -order.repository.ts
+```
+
+## 📂 Estructura de un Repositorio
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Order } from '../entities/order.entity';
+
+@Injectable()
+export class OrderRepository {
+  constructor(
+    @InjectRepository(Order)
+    private readonly repository: Repository<Order>,
+  ) {}
+
+  async create(order: Partial<Order>): Promise<Order> {
+    return this.repository.save(order);
+  }
+
+  async findById(id: number): Promise<Order | null> {
+    return this.repository.findOne({ where: { id } });
+  }
+
+  async findAll(): Promise<Order[]> {
+    return this.repository.find();
+  }
+
+  async update(id: number, orderData: Partial<Order>): Promise<void> {
+    await this.repository.update(id, orderData);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.repository.delete(id);
+  }
+}
+```
+
+## 📥 Importaciones y 📤 Exportaciones
+
+### **Uso en un Servicio**
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { Order } from '../entities/order.entity';
+import { OrderRepository } from '../repositories/order.repository';
+
+@Injectable()
+export class OrderService {
+  constructor(private readonly orderRepository: OrderRepository) {}
+
+  async createOrder(orderData: Partial<Order>) {
+    return this.orderRepository.create(orderData);
+  }
+
+  async getOrderById(id: number) {
+    return this.orderRepository.findById(id);
+  }
+}
+```
+
+## 🚀 Conclusión
+
+Los repositorios encapsulan las operaciones de base de datos, asegurando una separación clara entre la lógica de negocio y la persistencia de datos.

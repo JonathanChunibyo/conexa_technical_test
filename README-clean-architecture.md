@@ -160,16 +160,16 @@ Este documento explica la estructura y creación de entidades en el proyecto, si
 Generar una nueva entidad con:
 
 ```bash
-nest generate class core/<modulo>/entities/<nombre-de-la-entidad> --no-spec
+nest generate class core/<modulo>/entities/<nombre-de-la-entidad> --no-spec --flat
 
 ```
 
 Ejemplo:
 
 ```bash
-nest generate class core/orders/entities/order --no-spec
+nest generate class core/orders/entities/order --no-spec --flat
 
-NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos.
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos y --flat para que solo quede el archivo natural de entity.ts
 ```
 
 Esto crea:
@@ -178,11 +178,8 @@ Esto crea:
 -src/
     -core/orders/
         -entities/
-            -order/
-                -order.entity.ts
+            -order.entity.ts
 
-
-NOTA: Se debe de eliminar la carpeta de order que esta dentro de la carpeta de entities para que solo quede el archivo natural de entity.ts.
 ```
 
 ## 📂 Estructura de una Entidad
@@ -249,3 +246,70 @@ export class OrderService {
 ## 🚀 Conclusión
 
 Las entidades en este proyecto utilizan `@Entity()` de TypeORM para definir estructuras de base de datos de manera eficiente y escalable.
+
+# 📌 Documentación de Decoradores en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento explica la estructura y creación de decoradores en el proyecto, siguiendo Clean Architecture y organizándolos en la carpeta `infrastructure/documentation/decorators`.
+
+## 🔧 Creación de un Decorador
+
+Generar un nuevo decorador con:
+
+```bash
+nest generate decorator infrastructure/documentation/decorators/<nombre-del-decorador>
+```
+
+Ejemplo:
+
+```bash
+nest generate decorator infrastructure/documentation/decorators/roles --flat
+
+NOTA: Se coloca --flat al final para que solo quede el archivo natural de decorator.ts.
+```
+
+Esto crea:
+
+```bash
+-src/
+    -infrastructure/
+        -documentation/
+            -decorators/
+                -roles.decorator.ts
+```
+
+## 📂 Estructura de un Decorador
+
+Ejemplo de un decorador `@Roles()` para controlar permisos de acceso:
+
+```typescript
+import { SetMetadata } from '@nestjs/common';
+
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
+```
+
+## 📥 Importaciones y 📤 Uso de un Decorador
+
+### **Uso en un Controlador**
+
+```typescript
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/infrastructure/documentation/decorators/roles.decorator';
+import { RolesGuard } from 'src/infrastructure/guards/roles.guard';
+
+@Controller('orders')
+@UseGuards(RolesGuard)
+export class OrdersController {
+  @Get()
+  @Roles('admin', 'manager')
+  findAll() {
+    return 'Lista de órdenes';
+  }
+}
+```
+
+## 🚀 Conclusión
+
+Los decoradores personalizados permiten modularidad y reutilización en el proyecto, mejorando la seguridad y organización del código.

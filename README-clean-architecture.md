@@ -408,3 +408,94 @@ export class OrderService {
 ## 🚀 Conclusión
 
 Los repositorios encapsulan las operaciones de base de datos, asegurando una separación clara entre la lógica de negocio y la persistencia de datos.
+
+
+# 📌 Documentación de Servicios (Módulos Globales y Únicos) en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento describe la estructura y creación de servicios en el proyecto, siguiendo Clean Architecture y NestJS.
+
+## 🔧 Creación de un Servicio
+
+Generar un nuevo servicio con:
+
+```bash
+nest generate service core/<modulo>/services/<nombre-del-servicio> --no-spec --flat
+```
+
+Ejemplo:
+
+```bash
+nest generate service core/orders/services/order --no-spec --flat
+
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos y --flat para que solo quede el archivo natural de service.ts
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/orders/
+        -services/
+            -order.service.ts
+```
+
+## 📂 Estructura de un Servicio
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { Order } from '../entities/order.entity';
+import { OrderRepository } from '../repositories/order.repository';
+
+@Injectable()
+export class OrderService {
+  constructor(private readonly orderRepository: OrderRepository) {}
+
+  async createOrder(orderData: Partial<Order>): Promise<Order> {
+    return this.orderRepository.create(orderData);
+  }
+
+  async getOrderById(id: number): Promise<Order | null> {
+    return this.orderRepository.findById(id);
+  }
+}
+```
+
+## 📥 Importaciones y 📤 Exportaciones
+
+### **Uso en un Módulo**
+
+```typescript
+import { Module } from '@nestjs/common';
+import { OrderService } from './services/order.service';
+import { OrderRepository } from './repositories/order.repository';
+
+@Module({
+  providers: [OrderService, OrderRepository],
+  exports: [OrderService],
+})
+export class OrderModule {}
+```
+
+### **Registro Global de Servicios**
+
+Para hacer un servicio global, se agrega `@Global()` en el módulo:
+
+```typescript
+import { Global, Module } from '@nestjs/common';
+import { OrderService } from './services/order.service';
+
+@Global()
+@Module({
+  providers: [OrderService],
+  exports: [OrderService],
+})
+export class GlobalModule {}
+```
+
+Esto permite usar `OrderService` en otros módulos sin necesidad de importarlo explícitamente.
+
+## 🚀 Conclusión
+
+Los servicios encapsulan la lógica de negocio y se pueden organizar como módulos únicos o globales según la necesidad del proyecto.

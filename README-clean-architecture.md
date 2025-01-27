@@ -587,3 +587,93 @@ bootstrap();
 ## 🚀 Conclusión
 
 Los Guards permiten manejar la autenticación y autorización en la aplicación, asegurando un control de acceso estructurado y reutilizable.
+
+# 📌 Documentación de Interceptors en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento describe la estructura y creación de Interceptors en el proyecto, siguiendo Clean Architecture y NestJS.
+
+## 🔧 Creación de un Interceptor
+
+Generar un nuevo Interceptor con:
+
+```bash
+nest generate interceptor core/<modulo>/interceptors/<nombre-del-interceptor> --no-spec --flat
+```
+
+Ejemplo:
+
+```bash
+nest generate interceptor core/logging/interceptors/logging --no-spec --flat
+
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos y --flat para que solo quede el archivo natural de interceptor.ts
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/logging/
+        -interceptors/
+            -logging.interceptor.ts
+```
+
+## 📂 Estructura de un Interceptor
+
+```typescript
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    console.log('Antes de la ejecución del handler');
+    
+    return next.handle().pipe(
+      tap(() => console.log('Después de la ejecución del handler')),
+    );
+  }
+}
+```
+
+## 📥 Uso de un Interceptor en un Controlador
+
+Se aplica a un controlador o ruta específica usando `@UseInterceptors()`:
+
+```typescript
+import { Controller, Get, UseInterceptors } from '@nestjs/common';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
+
+@Controller('orders')
+export class OrderController {
+  @Get()
+  @UseInterceptors(LoggingInterceptor)
+  getOrders() {
+    return 'Lista de pedidos';
+  }
+}
+```
+
+## 🌎 Registro Global de Interceptors
+
+Para aplicar un Interceptor a toda la aplicación, se configura en `main.ts`:
+
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { LoggingInterceptor } from './core/logging/interceptors/logging.interceptor';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalInterceptors(new LoggingInterceptor());
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+## 🚀 Conclusión
+
+Los Interceptors permiten manejar la lógica transversal en la aplicación, como logs, manipulación de respuestas o manejo de errores de manera eficiente y modular.
+

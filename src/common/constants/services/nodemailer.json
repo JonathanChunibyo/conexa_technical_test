@@ -1,0 +1,4 @@
+{
+    "successfulConnectionMailing": "The connection for sending e-mails is correct.",
+    "sendEmail": "Error sending verification email. Please check the email address and try again."
+}

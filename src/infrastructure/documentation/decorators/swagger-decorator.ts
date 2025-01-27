@@ -5,8 +5,6 @@ import { ReferenceObject, SchemaObject } from '@nestjs/swagger/dist/interfaces/o
 
 export function ApiSwaggerResponse(dataTransfer: { apiOperation: ApiOperationOptions, schema: SchemaObject & Partial<ReferenceObject> }) {
   const { apiOperation, schema } = dataTransfer;
-  console.log(apiOperation)
-  console.log(schema)
   return applyDecorators(
         ApiOperation(apiOperation),
         ApiResponse({ ...swaggerResponses.ok, schema }),

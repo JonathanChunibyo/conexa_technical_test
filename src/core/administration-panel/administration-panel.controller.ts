@@ -2,6 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserDto } from '../user/dto/user.dto';
+import { API_OPERATION_SWAGGER } from './documentation/swagger-constant';
 
 // swagger
 import { readApiValidateField } from '../../infrastructure/documentation/command/swagger.command';

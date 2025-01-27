@@ -499,3 +499,91 @@ Esto permite usar `OrderService` en otros módulos sin necesidad de importarlo e
 ## 🚀 Conclusión
 
 Los servicios encapsulan la lógica de negocio y se pueden organizar como módulos únicos o globales según la necesidad del proyecto.
+
+# 📌 Documentación de Guards en el Proyecto
+
+## 🏗️ Introducción
+
+Este documento describe la estructura y creación de Guards en el proyecto, siguiendo Clean Architecture y NestJS.
+
+## 🔧 Creación de un Guard
+
+Generar un nuevo Guard con:
+
+```bash
+nest generate guard core/<modulo>/guards/<nombre-del-guard> --no-spec --flat
+```
+
+Ejemplo:
+
+```bash
+nest generate guard core/auth/guards/auth --no-spec --flat
+
+NOTA: Se coloca --no-spec al final para que no nos cree el archivo de testing que no necesitaremos y --flat para que solo quede el archivo natural de guard.ts
+```
+
+Esto crea:
+
+```bash
+-src/
+    -core/
+        -auth/
+            -guards/
+                -auth.guard.ts
+```
+
+## 📂 Estructura de un Guard
+
+```typescript
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+    return request.user ? true : false;
+  }
+}
+```
+
+## 📥 Uso de un Guard en un Controlador
+
+Se aplica a un controlador o ruta específica usando `@UseGuards()`:
+
+```typescript
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from './guards/auth.guard';
+
+@Controller('orders')
+export class OrderController {
+  @Get()
+  @UseGuards(AuthGuard)
+  getOrders() {
+    return 'Lista de pedidos';
+  }
+}
+```
+
+## 🌎 Registro Global de Guards
+
+Para aplicar un Guard a toda la aplicación, se configura en `main.ts`:
+
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { AuthGuard } from './core/auth/guards/auth.guard';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalGuards(new AuthGuard());
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+## 🚀 Conclusión
+
+Los Guards permiten manejar la autenticación y autorización en la aplicación, asegurando un control de acceso estructurado y reutilizable.

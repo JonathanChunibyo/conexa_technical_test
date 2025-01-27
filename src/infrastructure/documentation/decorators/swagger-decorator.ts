@@ -1,49 +1,13 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiOperationOptions, ApiResponse } from '@nestjs/swagger';
-import { swaggerResponses } from '../swagger-responses';
-import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { ApiOperation, ApiOperationOptions, ApiResponse, ApiResponseOptions } from '@nestjs/swagger';
+import { swaggerResponses } from '../constants/swagger-responses';
+import { ReferenceObject, SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
-interface ApiSchema {
-  summary: string;
-  description: string;
-  properties: Record<string, any>;
-  required: string[];
-  statusCodes?: Record<number, { description: string }>;
-};
-
-export function createApiSchema(options: ApiSchema): Partial<OperationObject> {
-  const { summary, description, properties, required, statusCodes = {} } = options;
-  if(!statusCodes[200]) statusCodes[200] = swaggerResponses.validateFile;
-  const responses = Object.entries(statusCodes).reduce((acc, [status, config]) => {
-    acc[status] = {
-      description: config.description,
-      ...(status === '200' && {
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties,
-              required,
-            },
-          },
-        },
-      }),
-    };
-    return acc;
-  }, {});
-
-  return {
-    summary,
-    description,
-    responses,
-  };
-}
-
-export function ApiValidateFile(options: ApiSchema) {
-  const schema: Partial<OperationObject> = createApiSchema(options);
+export function ApiSwaggerResponse(dataTransfer: { apiOperation: ApiOperationOptions, schema: SchemaObject & Partial<ReferenceObject> }) {
+  const { apiOperation, schema } = dataTransfer;
   return applyDecorators(
-        ApiOperation(schema),
-        ApiResponse(swaggerResponses.validateFile),
+        ApiOperation(apiOperation),
+        ApiResponse({ ...swaggerResponses.ok, schema }),
         ApiResponse(swaggerResponses.badRequest),
         ApiResponse(swaggerResponses.internalError),
   );

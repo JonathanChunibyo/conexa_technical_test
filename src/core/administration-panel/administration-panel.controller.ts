@@ -1,11 +1,21 @@
-import { Controller, Post, Body } from '@nestjs/common';
+// Libraries
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiValidateFile } from 'src/infrastructure/documentation/decorators/swagger-decorator';
-import { UserRepository } from '../user/repositories/user.repository';
-import { UserDto } from '../user/dto/user.dto';
-import { API_OPERATION_SWAGGER } from './documentation/swagger-constant';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('administration-panel')
+// Repository
+import { UserRepository } from '../user/repositories/user.repository';
+
+// DTO
+import { UserDto } from '../user/dto/user.dto';
+
+// swagger
+import { readApiValidateField } from '../../infrastructure/documentation/command/swagger.command';
+import { ApiSwaggerResponse } from 'src/infrastructure/documentation/decorators/swagger-decorator';
+
+const controllerPath = 'administration-panel';
+
+@Controller(controllerPath)
 export class AdministrationPanelController {
   constructor(
     private readonly userRepository: UserRepository,
@@ -13,10 +23,10 @@ export class AdministrationPanelController {
   ) {}
 
   @Post("create-user")
-  @ApiValidateFile(API_OPERATION_SWAGGER['create-user'])
+  @ApiSwaggerResponse(readApiValidateField("create-user", controllerPath))
+  @UseGuards(AuthGuard('jwt'))
   async createUser(@Body() createUserDto: UserDto) {
     const user = this.userRepository.create(createUserDto);
-    console.log(user);
     return user;
     // return await this.commandBus.execute(new CreateUserCommand(
     //   createUserDto.name,

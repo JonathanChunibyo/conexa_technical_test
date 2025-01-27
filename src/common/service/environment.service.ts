@@ -8,7 +8,7 @@ import * as fs from 'fs';
 @Injectable()
 export class EnvironmentService {
     #envPath: any;
-    #nodeEnv: string | undefined = process.env.APP_ENV ? process.env.APP_ENV.trim() : undefined;
+    #nodeEnv: string | undefined = process.env.APP_ENV ? process.env.APP_ENV.trim() : 'local';
     #envConfig: { [key: string]: string };
 
     constructor() {
@@ -36,6 +36,6 @@ export class EnvironmentService {
     }
 
     get(key: string): string | undefined {
-      return process.env[key];
+      return this.#envConfig[key];
     }
 }

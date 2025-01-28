@@ -11,6 +11,8 @@ import { JwtStrategyService } from './common/strategies/jwt.strategy.service';
 import { JwtModule } from '@nestjs/jwt';
 import { CommonModule } from './common/common.module';
 import { UserRepository } from './core/user/repositories/user.repository';
+import { CodeSmsModule } from './core/code-sms/code-sms.module';
+import { AuthenticationModule } from './core/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -23,7 +25,10 @@ import { UserRepository } from './core/user/repositories/user.repository';
     }),
     UserModule, 
     CqrsModule.forRoot(), 
-    AdministrationPanelModule, CommonModule,
+    AdministrationPanelModule, 
+    CommonModule,
+    CodeSmsModule, 
+    AuthenticationModule,
   ],
   controllers: [],
   providers: [

@@ -3,6 +3,9 @@ import { Controller, Post, Body, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 
+// services
+import { ArgonService } from "src/common/service/argon2.service";
+
 // Repository
 import { UserRepository } from "../entities/user/repositories/user.repository";
 
@@ -12,7 +15,6 @@ import { UserDto } from "../entities/user/dto/user.dto";
 // swagger
 import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";
 import { ApiSwaggerResponse } from "src/infrastructure/documentation/decorators/swagger-decorator";
-import { ArgonService } from "src/common/service/argon2.service";
 
 const controllerPath = "administration-panel";
 

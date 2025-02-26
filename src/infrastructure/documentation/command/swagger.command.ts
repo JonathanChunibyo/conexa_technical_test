@@ -1,7 +1,10 @@
+// libraries
 import { Injectable } from '@nestjs/common';
 import { ApiOperationOptions } from '@nestjs/swagger';
-import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { join } from 'path';
+
+// interfaces
+import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 export function readApiValidateField(nameController: string, nameRoute: string) {
     const filePathRoot = join(__dirname, '../../../core', nameRoute, 'documentation');

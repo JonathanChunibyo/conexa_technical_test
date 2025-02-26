@@ -1,7 +1,10 @@
+// libraries
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnvironmentService } from 'src/common/service/environment.service';
 import * as path from 'path';
+
+// services
+import { EnvironmentService } from 'src/common/service/environment.service';
 
 @Module({
     imports: [

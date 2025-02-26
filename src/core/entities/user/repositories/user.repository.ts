@@ -1,8 +1,13 @@
+// libraries
 import { Injectable } from "@nestjs/common";
-import { BaseRepository } from "../../../../common/repositories/base.repository";
 import { DataSource } from "typeorm";
-import { UserDto, UserGetDto, UserUpdateDto } from "../dto/user.dto";
+
+// repositories
+import { BaseRepository } from "../../../../common/repositories/base.repository";
 import { UserEntity } from "../entities/user.entity";
+
+// dto
+import { UserDto, UserGetDto, UserUpdateDto } from "../dto/user.dto";
 
 @Injectable()
 export class UserRepository extends BaseRepository<

@@ -1,6 +1,9 @@
+// libraries
 import { Global, Module } from "@nestjs/common";
-import { EnvironmentService } from "./service/environment.service";
 import { JwtModule, JwtService } from "@nestjs/jwt";
+
+// services
+import { EnvironmentService } from "./service/environment.service";
 
 @Global()
 @Module({

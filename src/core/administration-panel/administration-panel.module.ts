@@ -1,8 +1,15 @@
+// libraries
 import { Module } from "@nestjs/common";
-import { AdministrationPanelService } from "./administration-panel.service";
+
+// controller
 import { AdministrationPanelController } from "./administration-panel.controller";
-import { UserRepository } from "../entities/user/repositories/user.repository";
+
+// services
+import { AdministrationPanelService } from "./administration-panel.service";
 import { ArgonService } from "src/common/service/argon2.service";
+
+// repositories
+import { UserRepository } from "../entities/user/repositories/user.repository";
 
 @Module({
   controllers: [AdministrationPanelController],

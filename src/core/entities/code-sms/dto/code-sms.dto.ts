@@ -1,3 +1,4 @@
+// libraries
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import {
   IsNotEmpty,
@@ -7,7 +8,6 @@ import {
   IsUUID,
   IsOptional,
 } from "class-validator";
-import { UserEntity } from "src/core/entities/user/entities/user.entity";
 
 export class CodeSmsDto {
   @ApiProperty({

@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
-
 // Libraries
+import { Injectable } from '@nestjs/common';
 import { resolve } from 'path';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';

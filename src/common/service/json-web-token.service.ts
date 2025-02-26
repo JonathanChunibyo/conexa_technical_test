@@ -1,6 +1,5 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-
 // Libraries
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 // Constants - Messages

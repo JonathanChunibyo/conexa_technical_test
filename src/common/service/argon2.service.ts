@@ -1,6 +1,5 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-
 // Libraries
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import * as argon2 from 'argon2';
 
 // Constants - Messages

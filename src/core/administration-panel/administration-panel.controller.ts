@@ -1,33 +1,38 @@
 // Libraries
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Post, Body, UseGuards } from "@nestjs/common";
+import { CommandBus } from "@nestjs/cqrs";
+import { AuthGuard } from "@nestjs/passport";
 
 // Repository
-import { UserRepository } from '../user/repositories/user.repository';
+import { UserRepository } from "../entities/user/repositories/user.repository";
 
 // DTO
-import { UserDto } from '../user/dto/user.dto';
+import { UserDto } from "../entities/user/dto/user.dto";
 
 // swagger
-import { readApiValidateField } from '../../infrastructure/documentation/command/swagger.command';
-import { ApiSwaggerResponse } from 'src/infrastructure/documentation/decorators/swagger-decorator';
+import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";
+import { ApiSwaggerResponse } from "src/infrastructure/documentation/decorators/swagger-decorator";
+import { ArgonService } from "src/common/service/argon2.service";
 
-const controllerPath = 'administration-panel';
+const controllerPath = "administration-panel";
 
 @Controller(controllerPath)
 export class AdministrationPanelController {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly commandBus: CommandBus
+    private readonly commandBus: CommandBus,
+    private readonly argonService: ArgonService,
   ) {}
 
   @Post("create-user")
   @ApiSwaggerResponse(readApiValidateField("create-user", controllerPath))
   @UseGuards(AuthGuard('jwt'))
   async createUser(@Body() createUserDto: UserDto) {
-    const user = this.userRepository.create(createUserDto);
-    return user;
+    const { password, ...user } = createUserDto;
+    const passwordEncrypt = await this.argonService.hashPassword(password);
+    await this.userRepository.create({ ...user, password: passwordEncrypt });
+    return true;
+    //TODO: CQRS
     // return await this.commandBus.execute(new CreateUserCommand(
     //   createUserDto.name,
     //   createUserDto.nickName,

@@ -4,7 +4,8 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 export abstract class BaseRepository<
     T extends ObjectLiteral, 
     C extends DeepPartial<T>, 
-    U extends FindOptionsWhere<T>
+    U extends FindOptionsWhere<T>,
+    G extends FindOptionsWhere<T>
    > {
     
   private readonly repository: Repository<T>;
@@ -16,24 +17,48 @@ export abstract class BaseRepository<
     this.repository = this.dataSource.getRepository(this.entity);
   }
 
-  async findOne(where: U): Promise<T | null> {
-    return this.repository.findOne({ where });
+  deleteSensitiveData<T extends Record<string, any>>(data: T): Partial<T> {
+    if (!data || typeof data !== 'object') return data;
+  
+    const sensitiveKeys = ['password', 'isState', 'createdAt', 'updatedAt'];
+    const cleanedData = { ...data };
+  
+    sensitiveKeys.forEach((key) => {
+      if (key in cleanedData) {
+        delete cleanedData[key];
+      }
+    });
+  
+    return cleanedData;
+  }
+  
+
+  find() {
+    return this.repository.createQueryBuilder();
   }
 
-  async findAll(where: U): Promise<T[]> {
-    return this.repository.find({ where });
+  async findById(where: U): Promise<T | null> {
+    return await this.repository.findOne({ where });
+  }
+
+  async findAll(where: G): Promise<T[]> {
+    return await this.repository.find({ where });
   }
 
   async create(data: C): Promise<T> {
     const entity = this.repository.create(data);
-    return this.repository.save(entity);
+    return await this.repository.save(entity);
   }
 
-  async update(where: U, data: QueryDeepPartialEntity<T>): Promise<void> {
+  async updateById(where: U, data: QueryDeepPartialEntity<T>): Promise<void> {
     await this.repository.update(where, data);
   }
 
-  async delete(where: U): Promise<void> {
+  async deleteById(where: U): Promise<void> {
+    await this.repository.delete(where);
+  }
+
+  async delete(where: G): Promise<void> {
     await this.repository.delete(where);
   }
 }

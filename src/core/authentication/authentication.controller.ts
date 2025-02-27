@@ -28,6 +28,8 @@ import { CredentialAuthDto, CredentialIdentifierDto } from "src/common/dto/globa
 // constant
 import * as CONSTANTS_NODEMAILER from "../../common/constants/services/nodemailer.json";
 import * as CONSTANTS_GLOBAL_ERROR from "../../common/constants/global/error.json";
+import * as CONSTANTS_GLOBAL_HEADERS from "../../common/constants/global/headers.json";
+import * as CONSTANTS_HEADERS from "./constants/headers.json";
 
 const controllerPath = "authentication";
 @Controller(controllerPath)
@@ -69,10 +71,10 @@ export class AuthenticationController {
     @Body() verificationCodeDto: VerificationCodeDto,
     @Headers() credentialIdentifierDto: CredentialIdentifierDto
   ) {
-    if (!credentialIdentifierDto["credential-identifier"])
+    if (!credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
     const id = this.base64Service.decodeBase64(
-      credentialIdentifierDto["credential-identifier"]
+      credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier]
     );
     const user = await this.userRepository.findById({ id });
     if (user) {
@@ -99,10 +101,10 @@ export class AuthenticationController {
   ) {
     const { email } = validateEmailDto;
     const user = await this.userRepository.find().where({ email }).getOne();
-    if (!credentialAuthDto["credential-auth"])
+    if (!credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
     if (user) {
-      const password = this.base64Service.decodeBase64(credentialAuthDto["credential-auth"]);
+      const password = this.base64Service.decodeBase64(credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]);
       const isValidPassword = await this.argonService.comparePasswords(
         password,
         user.password
@@ -123,13 +125,13 @@ export class AuthenticationController {
     @Headers() credentialDto: ChangePasswordCredentialDto,
     @Headers() credentialIdentifierDto: CredentialIdentifierDto
   ) {
-    if (!credentialDto["credential-auth"] || !credentialDto["credential-before-auth"])
+    if (!credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth] || !credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
-    if (!credentialIdentifierDto["credential-identifier"])
+    if (!credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
-    const passwordBefore = this.base64Service.decodeBase64(credentialDto["credential-before-auth"]);
-    const password = this.base64Service.decodeBase64(credentialDto["credential-auth"]);
-    const id = this.base64Service.decodeBase64(credentialIdentifierDto["credential-identifier"]);
+    const passwordBefore = this.base64Service.decodeBase64(credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth]);
+    const password = this.base64Service.decodeBase64(credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]);
+    const id = this.base64Service.decodeBase64(credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier]);
     const user = await this.userRepository.findById({ id });
     if(user) {
       const isValidPassword = await this.argonService.comparePasswords(

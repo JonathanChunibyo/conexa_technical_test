@@ -3,8 +3,8 @@ import { ApiProperty, PickType } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
 // dto
-import { CodeSmsDto } from "src/core/entities/code-sms/dto/code-sms.dto";
-import { UserDto } from "src/core/entities/user/dto/user.dto";
+import { CodeSmsDto } from "src/repositories/code-sms/dto/code-sms.dto";
+import { UserDto } from "src/repositories/user/dto/user.dto";
 import { CredentialAuthDto } from "src/common/dto/global.dto";
 
 export class ValidateEmailDto extends PickType(UserDto, ['email'] as const) {}

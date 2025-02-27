@@ -7,10 +7,10 @@ import { AuthGuard } from "@nestjs/passport";
 import { ArgonService } from "src/common/service/argon2.service";
 
 // Repository
-import { UserRepository } from "../entities/user/repositories/user.repository";
+import { UserRepository } from "../../repositories/user/repositories/user.repository";
 
 // DTO
-import { UserDto } from "../entities/user/dto/user.dto";
+import { UserDto } from "../../repositories/user/dto/user.dto";
 
 // swagger
 import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";

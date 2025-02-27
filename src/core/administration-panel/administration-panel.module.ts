@@ -9,7 +9,7 @@ import { AdministrationPanelService } from "./administration-panel.service";
 import { ArgonService } from "src/common/service/argon2.service";
 
 // repositories
-import { UserRepository } from "../entities/user/repositories/user.repository";
+import { UserRepository } from "../../repositories/user/repositories/user.repository";
 
 @Module({
   controllers: [AdministrationPanelController],

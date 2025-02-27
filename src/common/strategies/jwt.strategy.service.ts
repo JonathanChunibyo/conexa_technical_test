@@ -8,8 +8,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { EnvironmentService } from "../service/environment.service";
 
 // Repository
-import { UserRepository } from "src/core/entities/user/repositories/user.repository";
-import { UserEntity } from "src/core/entities/user/entities/user.entity";
+import { UserRepository } from "src/repositories/user/repositories/user.repository";
+import { UserEntity } from "src/repositories/user/entities/user.entity";
 
 export interface JwtPayload {
   id: string;

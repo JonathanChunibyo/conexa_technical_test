@@ -18,8 +18,8 @@ import { AuthGuard } from "@nestjs/passport";
 import { readApiValidateField } from "src/infrastructure/documentation/command/swagger.command";
 
 // repositories
-import { UserRepository } from "../entities/user/repositories/user.repository";
-import { CodeSmsRepository } from "../entities/code-sms/repositories/code-sms.repository";
+import { UserRepository } from "../../repositories/user/repositories/user.repository";
+import { CodeSmsRepository } from "../../repositories/code-sms/repositories/code-sms.repository";
 
 // dto
 import { ChangePasswordCredentialDto, ValidateEmailDto, VerificationCodeDto } from "./dto/authentication.dto";

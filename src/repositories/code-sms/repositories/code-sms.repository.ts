@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 
 // repositories
-import { BaseRepository } from "../../../../common/repositories/base.repository";
+import { BaseRepository } from "../../../common/repositories/base.repository";
 import { CodeSmsEntity } from "../entities/code-sms.entity";
 
 // dto

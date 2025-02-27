@@ -12,8 +12,8 @@ import { JsonWebTokenService } from "src/common/service/json-web-token.service";
 import { NodemailerService } from "src/common/service/nodemailer.service";
 
 // repositories
-import { UserRepository } from "../entities/user/repositories/user.repository";
-import { CodeSmsRepository } from "../entities/code-sms/repositories/code-sms.repository";
+import { UserRepository } from "../../repositories/user/repositories/user.repository";
+import { CodeSmsRepository } from "../../repositories/code-sms/repositories/code-sms.repository";
 
 @Module({
   controllers: [AuthenticationController],

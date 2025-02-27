@@ -11,6 +11,7 @@ import { EnvironmentService } from 'src/common/service/environment.service';
             TypeOrmModule.forRootAsync({
               inject: [EnvironmentService],
               useFactory: (environmentService: EnvironmentService) => {
+                console.log(path.resolve(__dirname, '..', '..', 'repositories', '**', 'entities', '*.entity.{ts,js}'))
                 return ({
                   type: 'mariadb',
                   host: environmentService.get('HOST_DB'),
@@ -18,7 +19,7 @@ import { EnvironmentService } from 'src/common/service/environment.service';
                   username: environmentService.get('USER_NAME_DB'),
                   password: environmentService.get('PASSWORD_DB'),
                   database: environmentService.get('NAME_DB'),
-                  entities: [path.resolve(__dirname, '..', '..', 'core', 'entities', '**', 'entities', '*.entity.{ts,js}')],
+                  entities: [path.resolve(__dirname, '..', '..', 'repositories', '**', 'entities', '*.entity.{ts,js}')],
                   // ! ALWAYS FALSE IN PROD
                   synchronize: false,
                   autoLoadEntities: false,

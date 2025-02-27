@@ -1,5 +1,5 @@
 // libraries
-import { Controller, Post, Body, Headers, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Body, Headers, BadRequestException, UseGuards } from "@nestjs/common";
 
 // services
 import { AuthenticationService } from "./authentication.service";
@@ -11,6 +11,9 @@ import { NodemailerService } from "src/common/service/nodemailer.service";
 // decorator
 import { ApiSwaggerResponse } from "src/infrastructure/documentation/decorators/swagger-decorator";
 
+// guards
+import { AuthGuard } from "@nestjs/passport";
+
 // documentation
 import { readApiValidateField } from "src/infrastructure/documentation/command/swagger.command";
 
@@ -19,7 +22,7 @@ import { UserRepository } from "../entities/user/repositories/user.repository";
 import { CodeSmsRepository } from "../entities/code-sms/repositories/code-sms.repository";
 
 // dto
-import { ValidateEmailDto, VerificationCodeDto } from "./dto/authentication.dto";
+import { ChangePasswordCredentialDto, ValidateEmailDto, VerificationCodeDto } from "./dto/authentication.dto";
 import { CredentialAuthDto, CredentialIdentifierDto } from "src/common/dto/global.dto";
 
 // constant
@@ -66,15 +69,19 @@ export class AuthenticationController {
     @Body() verificationCodeDto: VerificationCodeDto,
     @Headers() credentialIdentifierDto: CredentialIdentifierDto
   ) {
-    if(!credentialIdentifierDto['credential-identifier']) throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
-    const id = this.base64Service.decodeBase64(credentialIdentifierDto['credential-identifier']);
+    if (!credentialIdentifierDto["credential-identifier"])
+      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
+    const id = this.base64Service.decodeBase64(
+      credentialIdentifierDto["credential-identifier"]
+    );
     const user = await this.userRepository.findById({ id });
-    if(user) {
+    if (user) {
       const { code } = verificationCodeDto;
-      const codeVerification = await this.codeSmsRepository.find()
+      const codeVerification = await this.codeSmsRepository
+        .find()
         .where({ code, userId: user.id })
         .getOne();
-      if(codeVerification) {
+      if (codeVerification) {
         await this.codeSmsRepository.delete({ userId: user.id });
         const userValidate = this.userRepository.deleteSensitiveData(user);
         const token = this.jsonWebTokenService.getJwtToken({ id: user.id });
@@ -92,7 +99,8 @@ export class AuthenticationController {
   ) {
     const { email } = validateEmailDto;
     const user = await this.userRepository.find().where({ email }).getOne();
-    if(!credentialAuthDto["credential-auth"]) throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
+    if (!credentialAuthDto["credential-auth"])
+      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
     if (user) {
       const password = this.base64Service.decodeBase64(credentialAuthDto["credential-auth"]);
       const isValidPassword = await this.argonService.comparePasswords(
@@ -103,6 +111,35 @@ export class AuthenticationController {
         const userValidate = this.userRepository.deleteSensitiveData(user);
         const token = this.jsonWebTokenService.getJwtToken({ id: user.id });
         return { user: userValidate, token };
+      }
+    }
+    return false;
+  }
+
+  @Post("change-password")
+  @ApiSwaggerResponse(readApiValidateField("change-password", controllerPath))
+  @UseGuards(AuthGuard("jwt"))
+  async changePassword(
+    @Headers() credentialDto: ChangePasswordCredentialDto,
+    @Headers() credentialIdentifierDto: CredentialIdentifierDto
+  ) {
+    if (!credentialDto["credential-auth"] || !credentialDto["credential-before-auth"])
+      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
+    if (!credentialIdentifierDto["credential-identifier"])
+      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
+    const passwordBefore = this.base64Service.decodeBase64(credentialDto["credential-before-auth"]);
+    const password = this.base64Service.decodeBase64(credentialDto["credential-auth"]);
+    const id = this.base64Service.decodeBase64(credentialIdentifierDto["credential-identifier"]);
+    const user = await this.userRepository.findById({ id });
+    if(user) {
+      const isValidPassword = await this.argonService.comparePasswords(
+        passwordBefore,
+        user.password
+      );
+      if (isValidPassword) {
+        const passwordEncrypt = await this.argonService.hashPassword(password);
+        await this.userRepository.updateById({ id: user.id }, { password: passwordEncrypt });
+        return true;
       }
     }
     return false;

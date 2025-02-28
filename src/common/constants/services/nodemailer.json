@@ -1,4 +1,6 @@
 {
     "successfulConnectionMailing": "The connection for sending e-mails is correct.",
-    "sendEmail": "Error sending verification email. Please check the email address and try again."
+    "sendEmail": "Error sending verification email. Please check the email address and try again.",
+    "templateSendCode": "send-verification-code",
+    "subjectSendCode": "Código de verificación"
 }

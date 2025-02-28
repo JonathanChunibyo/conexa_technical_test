@@ -11,8 +11,6 @@ export class ValidateEmailDto extends PickType(UserDto, ['email'] as const) {}
 
 export class VerificationCodeDto extends PickType(CodeSmsDto, ['code'] as const){}
 
-export class LoginDto  extends PickType(UserDto, ['email', 'password'] as const) {}
-
 export class ChangePasswordCredentialDto extends CredentialAuthDto {
     @ApiProperty({
        description: "Credential auth user ('password').",

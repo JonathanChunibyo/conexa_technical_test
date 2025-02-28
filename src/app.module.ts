@@ -22,13 +22,13 @@ import { JwtStrategyService } from "./common/strategies/jwt.strategy.service";
 import { UserRepository } from "./repositories/user/repositories/user.repository";
 
 // interceptors
-import { LoggingInterceptor } from "./core/prometheus/interceptor/logging.interceptor";
+//import { LoggingInterceptor } from "./core/prometheus/interceptor/logging.interceptor";
 
 @Module({
   imports: [
     DatabaseModule,
     UserModule,
-    CqrsModule.forRoot(),
+    // CqrsModule.forRoot(),
     AdministrationPanelModule,
     CommonModule,
     CodeSmsModule,
@@ -36,16 +36,16 @@ import { LoggingInterceptor } from "./core/prometheus/interceptor/logging.interc
   ],
   controllers: [],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggingInterceptor,
+    // },
     JsonWebTokenService,
     ArgonService,
     EnvironmentService,
     NodemailerService,
     JwtStrategyService,
     UserRepository,
-  ]
+  ],
 })
 export class AppModule {}

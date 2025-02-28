@@ -11,7 +11,6 @@ import { EnvironmentService } from 'src/common/service/environment.service';
             TypeOrmModule.forRootAsync({
               inject: [EnvironmentService],
               useFactory: (environmentService: EnvironmentService) => {
-                console.log(path.resolve(__dirname, '..', '..', 'repositories', '**', 'entities', '*.entity.{ts,js}'))
                 return ({
                   type: 'mariadb',
                   host: environmentService.get('HOST_DB'),

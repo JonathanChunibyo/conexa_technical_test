@@ -1,64 +1,60 @@
 // Libraries
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe } from "@nestjs/common";
-import { WinstonModule } from "nest-winston";
-import { transports, format } from "winston";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 
-// module
+// Module
 import { AppModule } from "./app.module";
 
 // Documentation
 import { swaggerInit } from "./infrastructure/documentation/swagger";
 
 // Logs
-import "winston-daily-rotate-file";
+import { LoggingMiddleware } from "./infrastructure/winston/middlewares/logger.winston.middleware";
 
 // Config dayjs
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-async function bootstrap() {
-  const logger = WinstonModule.createLogger({
-    transports: [
-      new transports.DailyRotateFile({
-        filename: "logs/error.log",
-        level: "error",
-        format: format.combine(
-          format.timestamp({
-            format: () =>
-              dayjs().tz("America/Bogota").format("YYYY-MM-DD HH:mm:ss"),
-          }),
-          format.json()
-        ),
-        datePattern: "YYYY-MM-DD",
-        zippedArchive: false,
-        maxFiles: "30d",
-      }),
-      new transports.Console({
-        format: format.combine(
-          format.cli(),
-          format.timestamp(),
-          format.printf((info) => {
-            const date =
-              typeof info.timestamp === "string" ||
-              typeof info.timestamp === "number"
-                ? dayjs(info.timestamp)
-                    .tz("America/Bogota")
-                    .format("YYYY-MM-DD HH:mm:ss")
-                : dayjs().tz("America/Bogota").format("YYYY-MM-DD HH:mm:ss");
-            return `* ${date} [${info.level}]: ${info.message}`;
-          })
-        ),
-      }),
-    ],
-  });
-  const app = await NestFactory.create(AppModule, { logger });
+// Environment variables
+const APP_ENV = process.env.APP_ENV?.trim() || "local";
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
 
-  app.useGlobalPipes(new ValidationPipe());
-  swaggerInit(app);
-  await app.listen(process.env.PORT ?? 3001);
+async function bootstrap() {
+  try {
+    // Config Logger
+    if (APP_ENV === "production") {
+      Logger.overrideLogger(["error", "warn"]);
+    }
+
+    const logger = new Logger("Bootstrap");
+    logger.debug("🚀 Aplicación iniciando...");
+
+    const app = await NestFactory.create(AppModule);
+
+    // Validation data
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
+
+    // Middleware logs
+    app.use(new LoggingMiddleware().use);
+
+    // Documentation Swagger
+    swaggerInit(app);
+
+    // Init server
+    await app.listen(PORT);
+    logger.verbose(`✅ Servidor corriendo en: http://localhost:${PORT}`);
+  } catch (error) {
+    console.error("❌ Error al iniciar la aplicación:", error);
+    process.exit(1);
+  }
 }
+
 bootstrap();

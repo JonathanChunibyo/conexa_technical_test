@@ -1,6 +1,6 @@
 // Libraries
 import { Controller, Post, Body, UseGuards, Headers, BadRequestException } from "@nestjs/common";
-import { CommandBus } from "@nestjs/cqrs";
+// import { CommandBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 
 // services
@@ -28,7 +28,7 @@ const controllerPath = "administration-panel";
 export class AdministrationPanelController {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly commandBus: CommandBus,
+    // private readonly commandBus: CommandBus,
     private readonly argonService: ArgonService,
     private readonly base64Service: Base64Service,
   ) {}

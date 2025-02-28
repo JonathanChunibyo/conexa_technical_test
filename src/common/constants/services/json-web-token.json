@@ -1,0 +1,4 @@
+{
+    "getJwtToken": "Error generating JWT token. Please try again later.",
+    "verifyToken": "Error verifying JWT token. Please ensure the token is valid and try again."
+}

@@ -1,0 +1,4 @@
+{
+    "credentialAuth": "GLOBAL-001 The 'Credential-Auth' value must be a valid string.",
+    "credentialIdentifier": "GLOBAL-002 The 'Credential-Identifier' value must be a valid string."
+}

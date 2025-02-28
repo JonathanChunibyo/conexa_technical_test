@@ -1,0 +1,4 @@
+{
+    "tokenInvalid": "Invalid token, logout and try again",
+    "userNotAuthorized": "The user is not authorized in the session, contact the administrator to access the application."
+}

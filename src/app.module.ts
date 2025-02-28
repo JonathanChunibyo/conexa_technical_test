@@ -1,42 +1,51 @@
-// Libraries
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// libraries
+import { Module } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
-// Modules controllers
-import { AuthenticationModule } from './controllers/authentication/authentication.module';
+// modules
+import { DatabaseModule } from "./infrastructure/database/database.module";
+import { UserModule } from "./repositories/user/user.module";
+import { AdministrationPanelModule } from "./core/administration-panel/administration-panel.module";
+import { CommonModule } from "./common/common.module";
+import { CodeSmsModule } from "./repositories/code-sms/code-sms.module";
+import { AuthenticationModule } from "./core/authentication/authentication.module";
 
-// Module models
-import { UsersModule } from './models/users/users.module';
-import { AuthenticationCodeModule } from './models/authentication-code/authentication-code.module';
-import { SeedersModule } from './resource/seeders/seeders.module';
+// services
+import { JsonWebTokenService } from "./common/service/json-web-token.service";
+import { ArgonService } from "./common/service/argon2.service";
+import { EnvironmentService } from "./common/service/environment.service";
+import { NodemailerService } from "./common/service/nodemailer.service";
+import { JwtStrategyService } from "./common/strategies/jwt.strategy.service";
+
+// repositories
+import { UserRepository } from "./repositories/user/repositories/user.repository";
+
+// interceptors
+//import { LoggingInterceptor } from "./core/prometheus/interceptor/logging.interceptor";
+
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.HOST_DB,
-      port: +process.env.PORT_DB,
-      username: process.env.USERNAME_DB,
-      password: process.env.PASSWORD_DB,
-      database: process.env.DATABASE_DB,
-      autoLoadEntities: true,
-      synchronize: false,
-      logging: true
-    }),
-
-    // Modules models app
-    UsersModule,
-    AuthenticationCodeModule,
-
-    // Modules controllers app
+    DatabaseModule,
+    UserModule,
+    // CqrsModule.forRoot(),
+    AdministrationPanelModule,
+    CommonModule,
+    CodeSmsModule,
     AuthenticationModule,
-
-    // Seeders module app
-    SeedersModule,
-
   ],
-  providers: [],
+  controllers: [],
+  providers: [
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggingInterceptor,
+    // },
+    JsonWebTokenService,
+    ArgonService,
+    EnvironmentService,
+    NodemailerService,
+    JwtStrategyService,
+    UserRepository,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

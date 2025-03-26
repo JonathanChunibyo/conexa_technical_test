@@ -1,5 +1,5 @@
 // Libraries
-import { Controller, Post, Body, UseGuards, Headers, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Headers, BadRequestException, Put } from "@nestjs/common";
 // import { CommandBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 
@@ -53,5 +53,24 @@ export class AdministrationPanelController {
     //   createUserDto.email,
     //   createUserDto.password,
     // ));
+  }
+
+  @Put("update-user")
+  @ApiSwaggerResponse(readApiValidateField("update-user", controllerPath))
+  @UseGuards(AuthGuard("jwt"))
+  async updateUser(
+    @Body() updateUserDto: UserUpdateDto,
+    @Headers() credentialAuthDto: CredentialAuthDto
+  ) {
+    const { id, ...user } = updateUserDto;
+    if (credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]) {
+      const password = this.base64Service.decodeBase64(
+        credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]
+      );
+      user.password = await this.argonService.hashPassword(password);
+    }
+
+    await this.userRepository.updateById({ id }, user);
+    return true;
   }
 }

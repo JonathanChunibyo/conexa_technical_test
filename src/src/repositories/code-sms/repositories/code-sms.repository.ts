@@ -7,7 +7,11 @@ import { BaseRepository } from "../../../common/repositories/base.repository";
 import { CodeSmsEntity } from "../entities/code-sms.entity";
 
 // dto
-import { CodeSmsDto, CodeSmsGetDto, CodeSmsUpdateDto } from "../dto/code-sms.dto";
+import {
+  CodeSmsDto,
+  CodeSmsGetDto,
+  CodeSmsUpdateDto,
+} from "../dto/code-sms.dto";
 
 @Injectable()
 export class CodeSmsRepository extends BaseRepository<

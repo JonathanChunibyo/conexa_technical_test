@@ -1,29 +1,43 @@
 // libraries
-import { Controller, Post, Body, Headers, BadRequestException, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Headers,
+  BadRequestException,
+  UseGuards,
+} from "@nestjs/common";
 
 // services
 import { AuthenticationService } from "./authentication.service";
-import { Base64Service } from "src/common/service/base64.service";
-import { ArgonService } from "src/common/service/argon2.service";
-import { JsonWebTokenService } from "src/common/service/json-web-token.service";
-import { NodemailerService } from "src/common/service/nodemailer.service";
+import { Base64Service } from "../../common/service/base64.service";
+import { ArgonService } from "../../common/service/argon2.service";
+import { JsonWebTokenService } from "../../common/service/json-web-token.service";
+import { NodemailerService } from "../../common/service/nodemailer.service";
 
 // decorator
-import { ApiSwaggerResponse } from "src/infrastructure/documentation/decorators/swagger-decorator";
+import { ApiSwaggerResponse } from "../../infrastructure/documentation/decorators/swagger-decorator";
 
 // guards
 import { AuthGuard } from "@nestjs/passport";
 
 // documentation
-import { readApiValidateField } from "src/infrastructure/documentation/command/swagger.command";
+import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";
 
 // repositories
 import { UserRepository } from "../../repositories/user/repositories/user.repository";
 import { CodeSmsRepository } from "../../repositories/code-sms/repositories/code-sms.repository";
 
 // dto
-import { ChangePasswordCredentialDto, ValidateEmailDto, VerificationCodeDto } from "./dto/authentication.dto";
-import { CredentialAuthDto, CredentialIdentifierDto } from "src/common/dto/global.dto";
+import {
+  ChangePasswordCredentialDto,
+  ValidateEmailDto,
+  VerificationCodeDto,
+} from "./dto/authentication.dto";
+import {
+  CredentialAuthDto,
+  CredentialIdentifierDto,
+} from "../../common/dto/global.dto";
 
 // constant
 import * as CONSTANTS_NODEMAILER from "../../common/constants/services/nodemailer.json";
@@ -72,7 +86,9 @@ export class AuthenticationController {
     @Headers() credentialIdentifierDto: CredentialIdentifierDto
   ) {
     if (!credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier])
-      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
+      throw new BadRequestException(
+        CONSTANTS_GLOBAL_ERROR.credentialIdentifier
+      );
     const id = this.base64Service.decodeBase64(
       credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier]
     );
@@ -104,7 +120,9 @@ export class AuthenticationController {
     if (!credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
     if (user) {
-      const password = this.base64Service.decodeBase64(credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]);
+      const password = this.base64Service.decodeBase64(
+        credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]
+      );
       const isValidPassword = await this.argonService.comparePasswords(
         password,
         user.password
@@ -125,22 +143,36 @@ export class AuthenticationController {
     @Headers() credentialDto: ChangePasswordCredentialDto,
     @Headers() credentialIdentifierDto: CredentialIdentifierDto
   ) {
-    if (!credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth] || !credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth])
+    if (
+      !credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth] ||
+      !credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth]
+    )
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
     if (!credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier])
-      throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialIdentifier);
-    const passwordBefore = this.base64Service.decodeBase64(credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth]);
-    const password = this.base64Service.decodeBase64(credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]);
-    const id = this.base64Service.decodeBase64(credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier]);
+      throw new BadRequestException(
+        CONSTANTS_GLOBAL_ERROR.credentialIdentifier
+      );
+    const passwordBefore = this.base64Service.decodeBase64(
+      credentialDto[CONSTANTS_HEADERS.credentialBeforeAuth]
+    );
+    const password = this.base64Service.decodeBase64(
+      credentialDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]
+    );
+    const id = this.base64Service.decodeBase64(
+      credentialIdentifierDto[CONSTANTS_GLOBAL_HEADERS.credentialIdentifier]
+    );
     const user = await this.userRepository.findById({ id });
-    if(user) {
+    if (user) {
       const isValidPassword = await this.argonService.comparePasswords(
         passwordBefore,
         user.password
       );
       if (isValidPassword) {
         const passwordEncrypt = await this.argonService.hashPassword(password);
-        await this.userRepository.updateById({ id: user.id }, { password: passwordEncrypt });
+        await this.userRepository.updateById(
+          { id: user.id },
+          { password: passwordEncrypt }
+        );
         return true;
       }
     }

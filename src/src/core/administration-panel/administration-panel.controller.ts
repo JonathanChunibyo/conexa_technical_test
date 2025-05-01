@@ -21,7 +21,7 @@ import { UserRepository } from "../../repositories/user/repositories/user.reposi
 // DTO
 import { CreateUserDto } from "./dto/administration-panel";
 import { CredentialAuthDto } from "../../common/dto/global.dto";
-import { UserUpdateDto } from "src/repositories/user/dto/user.dto";
+import { UserUpdateDto } from "../../repositories/user/dto/user.dto";
 
 // swagger
 import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";

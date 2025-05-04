@@ -7,6 +7,8 @@ import {
   Headers,
   BadRequestException,
   Put,
+  Get,
+  Query,
 } from "@nestjs/common";
 // import { CommandBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
@@ -14,12 +16,13 @@ import { AuthGuard } from "@nestjs/passport";
 // services
 import { Base64Service } from "../../common/service/base64.service";
 import { ArgonService } from "../../common/service/argon2.service";
+import { StarwarsService } from "src/common/service/starwars.service";
 
 // Repository
 import { UserRepository } from "../../repositories/user/repositories/user.repository";
 
 // DTO
-import { CreateUserDto } from "./dto/administration-panel";
+import { CreateUserDto, MovieByIdDto } from "./dto/administration-panel";
 import { CredentialAuthDto } from "../../common/dto/global.dto";
 import { UserUpdateDto } from "../../repositories/user/dto/user.dto";
 
@@ -37,9 +40,9 @@ const controllerPath = "administration-panel";
 export class AdministrationPanelController {
   constructor(
     private readonly userRepository: UserRepository,
-    // private readonly commandBus: CommandBus,
     private readonly argonService: ArgonService,
-    private readonly base64Service: Base64Service
+    private readonly base64Service: Base64Service,
+    private readonly starwarsService: StarwarsService
   ) {}
 
   @Post("create-user")
@@ -60,13 +63,6 @@ export class AdministrationPanelController {
       password: passwordEncrypt,
     });
     return true;
-    //TODO: CQRS
-    // return await this.commandBus.execute(new CreateUserCommand(
-    //   createUserDto.name,
-    //   createUserDto.nickName,
-    //   createUserDto.email,
-    //   createUserDto.password,
-    // ));
   }
 
   @Put("update-user")
@@ -86,5 +82,14 @@ export class AdministrationPanelController {
 
     await this.userRepository.updateById({ id }, user);
     return true;
+  }
+
+  @Get("movie-by-id")
+  @ApiSwaggerResponse(readApiValidateField("list-movies", controllerPath))
+  @UseGuards(AuthGuard("jwt"))
+  async listMovies(@Query() movieByIdDto: MovieByIdDto) {
+    const id = movieByIdDto.id;
+    const result = await this.starwarsService.getFilmsById(id);
+    return result;
   }
 }

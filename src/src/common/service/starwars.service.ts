@@ -20,9 +20,19 @@ export class StarwarsService {
 
   async getFilms() {
     try {
-      console.log(`${URL}films`);
       const response = await firstValueFrom(
         this.customHttpService.get(`${URL}/films`)
+      );
+      return response?.data;
+    } catch (error) {
+      throw new Error("Error fetching data: " + error.message);
+    }
+  }
+
+  async getFilmsById(id: string) {
+    try {
+      const response = await firstValueFrom(
+        this.customHttpService.get(`${URL}/films/${id}`)
       );
       return response?.data;
     } catch (error) {

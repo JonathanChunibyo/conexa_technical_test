@@ -16,7 +16,7 @@ import { AuthGuard } from "@nestjs/passport";
 // services
 import { Base64Service } from "../../common/service/base64.service";
 import { ArgonService } from "../../common/service/argon2.service";
-import { StarwarsService } from "src/common/service/starwars.service";
+import { StarwarsService } from "../../common/service/starwars.service";
 
 // Repository
 import { UserRepository } from "../../repositories/user/repositories/user.repository";

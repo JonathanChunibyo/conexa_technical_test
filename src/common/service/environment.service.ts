@@ -13,7 +13,7 @@ export class EnvironmentService {
     constructor() {
         switch (this.#nodeEnv) {
             case 'local':
-              this.#envPath = resolve(process.cwd(), '.env.local');
+              this.#envPath = resolve(process.cwd(), '.env');
               break;
             case 'qa':
               this.#envPath = resolve(process.cwd(), '.env.qa');

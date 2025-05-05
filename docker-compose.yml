@@ -13,13 +13,13 @@ services:
     ports:
       - 4002:4002
     env_file:
-       - ./src/src/.env.local
+      - .env
     depends_on:
       - conexa_db
     command: >
       sh -c "npm run start:dev"
     volumes:
-      - ./src/src:/app/src
+      - .:/app
 
   conexa_db:
     hostname: conexa_db

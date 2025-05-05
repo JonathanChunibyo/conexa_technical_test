@@ -9,7 +9,7 @@ import { AdministrationPanelController } from "./administration-panel.controller
 import { AdministrationPanelService } from "./administration-panel.service";
 import { ArgonService } from "../../common/service/argon2.service";
 import { Base64Service } from "../../common/service/base64.service";
-import { StarwarsService } from "src/common/service/starwars.service";
+import { StarwarsService } from "../../common/service/starwars.service";
 
 // repositories
 import { UserRepository } from "../../repositories/user/repositories/user.repository";

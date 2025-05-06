@@ -22,7 +22,6 @@ services:
       - .:/app
 
   conexa_db:
-    hostname: conexa_db
     container_name: conexa_db
     image: mariadb:11.2.3
     restart: unless-stopped
@@ -34,7 +33,7 @@ services:
     ports:
       - 3317:3306
     volumes:
-      - ./dbdata:/var/lib/mysql
+      - db_data:/var/lib/mysql
 
 volumes:
-  mariadb_data:
+  db_data:

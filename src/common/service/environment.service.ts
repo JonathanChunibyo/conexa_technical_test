@@ -13,19 +13,19 @@ export class EnvironmentService {
     constructor() {
         switch (this.#nodeEnv) {
             case 'local':
-              this.#envPath = resolve(process.cwd(), '.env');
+              this.#envPath = resolve(process.cwd(), '.env.local');
               break;
             case 'qa':
-              this.#envPath = resolve(process.cwd(), '.env.qa');
+              this.#envPath = resolve(process.cwd(), '.env');
               break;
             case 'production':
-              this.#envPath = resolve(process.cwd(), '.env.production');
+              this.#envPath = resolve(process.cwd(), '.env');
               break;
             case 'develop':
-              this.#envPath = resolve(process.cwd(), '.env.develop');
+              this.#envPath = resolve(process.cwd(), '.env');
               break;
             case 'test':
-              this.#envPath = resolve(process.cwd(), '.env.test');
+              this.#envPath = resolve(process.cwd(), '.env');
               break;
             default:
               throw new Error('Specify the APP_ENV variable');

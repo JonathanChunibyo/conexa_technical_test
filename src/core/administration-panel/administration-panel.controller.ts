@@ -85,9 +85,8 @@ export class AdministrationPanelController {
   }
 
   @Get("movie-by-id")
-  @ApiSwaggerResponse(readApiValidateField("list-movies", controllerPath))
-  @UseGuards(AuthGuard("jwt"))
-  async listMovies(@Query() movieByIdDto: MovieByIdDto) {
+  @ApiSwaggerResponse(readApiValidateField("movie-by-id", controllerPath))
+  async movieById(@Query() movieByIdDto: MovieByIdDto) {
     const id = movieByIdDto.id;
     const result = await this.starwarsService.getFilmsById(id);
     return result;

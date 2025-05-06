@@ -6,8 +6,8 @@ export class CreateUserDto  extends PickType(UserDto, [ "name", "nickName", "ema
 
 export class MovieByIdDto {
      @ApiProperty({
-        description: "Users full name.",
-        example: "Juan Pérez",
+        description: "id movie.",
+        example: "uuidv4: this is a non-real uuid, do not take as example",
         type: String,
       })
       @IsNotEmpty()

@@ -20,7 +20,7 @@ dayjs.extend(timezone);
 
 // Environment variables
 const APP_ENV = process.env.APP_ENV?.trim() || "local";
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 4002;
 
 async function bootstrap() {
   try {
@@ -39,7 +39,7 @@ async function bootstrap() {
       new ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,
-      }),
+      })
     );
 
     // Middleware logs

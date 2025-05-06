@@ -2,6 +2,7 @@
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { APP_INTERCEPTOR } from "@nestjs/core";
+import { HttpModule } from '@nestjs/axios';
 
 // modules
 import { DatabaseModule } from "./infrastructure/database/database.module";
@@ -17,12 +18,14 @@ import { ArgonService } from "./common/service/argon2.service";
 import { EnvironmentService } from "./common/service/environment.service";
 import { NodemailerService } from "./common/service/nodemailer.service";
 import { JwtStrategyService } from "./common/strategies/jwt.strategy.service";
+import { StarwarsService } from "./common/service/starwars.service";
 
 // repositories
 import { UserRepository } from "./repositories/user/repositories/user.repository";
 
 // interceptors
 //import { LoggingInterceptor } from "./core/prometheus/interceptor/logging.interceptor";
+import { PublicModule } from './core/public/public.module';
 
 @Module({
   imports: [
@@ -33,6 +36,8 @@ import { UserRepository } from "./repositories/user/repositories/user.repository
     CommonModule,
     CodeSmsModule,
     AuthenticationModule,
+    PublicModule,
+    HttpModule
   ],
   controllers: [],
   providers: [
@@ -46,6 +51,7 @@ import { UserRepository } from "./repositories/user/repositories/user.repository
     NodemailerService,
     JwtStrategyService,
     UserRepository,
+    StarwarsService
   ],
 })
 export class AppModule {}

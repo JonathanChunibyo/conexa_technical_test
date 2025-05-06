@@ -1,0 +1,17 @@
+FROM node:20.12.2-alpine3.18 AS base
+
+ENV APP_ENV=local
+
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm install && npm cache clean --force
+
+COPY src .
+
+FROM base AS local
+
+EXPOSE 4002
+
+CMD ["npm", "run", "start:dev"]

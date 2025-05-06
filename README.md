@@ -1,149 +1,78 @@
-# Base Nest back-end project
+# Conexa Backend - Instrucciones de Inicio
 
-API project that serves as API for the business model of the Base Nest project.
+¡Hola! 👋 Gracias por dedicarle tiempo a revisar este proyecto. Entiendo que evaluar a varios candidatos puede ser complejo, y valoro mucho que estés leyendo este README con atención, ¡incluso este pequeño mensaje personal!
 
+Mi nombre es Jonathan Rubio, y he dedicado varias semanas a construir esta base, buscando un equilibrio entre sencillez y funcionalidades importantes como documentación clara y logs con Winston.
 
-## Table of Contents
+Puede que esta prueba no cumpla con todos los requisitos al pie de la letra, ya que soy desarrollador backend con 4 años de experiencia y durante el desarrollo surgieron varias tareas urgentes de mi sprint actual.
 
-1. [Requirements](#requirements)
-   1. [Description](#description)
-2. [Nest project life cycle](#nest-project-life-cycle)
-3. [Commands](#commands)
-    1. [Guard](#guard)
-    2. [Interceptor](#interceptor)
-    3. [Service](#service)
-    4. [Entity](#entity)
+Aun así, agradezco sinceramente que explores el resultado de mi aprendizaje. Espero que lo que veas te parezca interesante y, más allá de la prueba en sí, ¡me encantaría tener la oportunidad de charlar sobre el lenguaje y la tecnología!
 
+¡Que tengas un excelente día y espero tengamos la oportunidad de conversar pronto!
 
-## Requirements
+---
 
-- If you do not yet have the Nest CLI installed, you can do so by running:
+Este documento explica cómo iniciar el proyecto Conexa Backend, tanto localmente como utilizando Docker.
 
-```bash
-npm i -g @nestjs/cli
-```
+## Pre-requisitos
 
-- Install the project dependencies with the following command line (*inside the src/src folder*):
+* **Node.js y npm:** Necesarios para la ejecución local. Puedes descargarlos desde [https://nodejs.org/](https://nodejs.org/).
+* **Docker:** Necesario para la ejecución con contenedores. Puedes descargarlo desde [https://www.docker.com/](https://www.docker.com/).
 
-```bash
-npm install
-```
+## Configuración Inicial de la Base de Datos
 
-- To start the project, in the package.json file check in the scripts section the command that starts the server in development mode:
+**Importante:** Para obtener correctamente las tablas de la base de datos en tu entorno, sigue estos pasos la primera vez que inicies el proyecto:
 
-```bash
-npm run start:dev
-```
+1.  **Accede al archivo `database.module.ts`:** Navega hasta la ubicación de este archivo dentro de la estructura de tu proyecto.
+2.  **Modifica las flags de sincronización:**
+    * Cambia la línea `synchronize: false` a `synchronize: true`.
+    * Cambia la línea `autoLoadEntities: false` a `autoLoadEntities: true`.
+3.  **Ejecuta el proyecto localmente o con Docker:** Esto forzará a TypeORM (tu ORM) a sincronizar las entidades (modelos) con la base de datos, creando las tablas necesarias.
+4.  **Revierte las flags (opcional pero recomendado):** Una vez que las tablas hayan sido creadas correctamente, puedes volver a cambiar las flags en `database.module.ts` a sus valores originales (`synchronize: false`, `autoLoadEntities: false`). Esto evitará que TypeORM intente modificar la base de datos en ejecuciones posteriores.
 
-## Description
+## Ejecución Local (Sin Docker)
 
-- nodemon: This tool will watch the files in the directory and if it detects changes it will automatically restart the application.
+Para ejecutar el proyecto localmente, asegúrate de cumplir con los siguientes requisitos:
 
-- --watch src: It monitors changes to the files inside the src folder, allowing you to test, restart the server or automatically recompile the code when there are modifications to the source files.
+1.  **Verificar archivos de entorno:**
+    * **`.env`:** Asegúrate de que exista un archivo `.env` en la raíz del proyecto con la configuración base.
+    * **`.env.local`:** Asegúrate de que exista un archivo `.env.local` en la raíz del proyecto. Este archivo contendrá las variables de conexión a tu base de datos externa local.
 
-- --ext ts: This tool is used to include and consider files with the .ts (TypeScript) extension during the execution of specific processes, such as code analysis or compilation.
+2.  **Configurar conexión a la base de datos externa:** Edita el archivo `.env.local` y proporciona los detalles de conexión a tu base de datos externa (sin Docker). Esto incluye host, puerto, usuario, contraseña y nombre de la base de datos.
 
-- --exec ts-node: Indicates that files should be executed using ts-node, allowing you to work directly with TypeScript code. It is an interpreter that allows TypeScript code to be executed without the need to compile it to JavaScript beforehand.
+3.  **Ejecutar el comando de inicio local:** Abre tu terminal en la raíz del proyecto y ejecuta el siguiente comando:
 
-- -r tsconfig-paths/register: ensures that the aliases configured in tsconfig.json work correctly at runtime.
+    ```bash
+    npm run start:local
+    ```
 
-- src/main.ts: The main input file for running the application written in TypeScript. This file is the starting point for the backend application, where the server is usually initialized, routes are configured or general configuration of the application is performed.
+    Este comando iniciará el servidor backend utilizando la configuración definida en el archivo `.env.local`. **Si la ejecución local es exitosa, podrás acceder a la documentación de Swagger a través del siguiente enlace en tu navegador:**
 
-## Nest project life cycle
+    ```
+    http://localhost:4002/api
+    ```
 
-The life cycle takes place from the moment the application is started until the node process is finished. This is divided into three phases: initialization, execution and termination.
+## Ejecución con Docker
 
-- NestFactory.create(AppModule): Running the npm run start:dev command initializes the project with NestFactory.create(AppModule). AppModule is a module in NestJS and is the entry point where all the other modules, drivers, providers and configurations that the application needs are configured.
+Para ejecutar el proyecto utilizando Docker, asegúrate de tener Docker instalado en tu sistema.
 
-- new ValidationPipe: validates incoming requests according to validation rules (defined with class-validator in the NestJS DTOs). This ensures that only valid data reaches the controllers.
+1.  **Verificar archivos de entorno:** Asegúrate de que exista un archivo `.env` en la raíz del proyecto con la configuración base. No es necesario un archivo `.env.local` para la ejecución con Docker, ya que la configuración de la base de datos se gestiona dentro de los contenedores.
 
-- await app.listen(process.env.PORT ?? 3000): Asynchronous function that starts the server trying to obtain the port number initially from the environment variables and in case it does not find the defined port it will use the indicated port (3000) as default value.
+2.  **Ejecutar Docker Compose:** Abre tu terminal en la raíz del proyecto y ejecuta el siguiente comando:
 
-Once the server is listening it starts handling incoming requests, routing through the corresponding controllers and services, responding to them and keeping the server running until it receives a shutdown signal.
+    ```bash
+    docker compose up --build
+    ```
 
-## Commands
+    Este comando realizará las siguientes acciones:
 
-## Guard
+    * **`--build`:** Construirá las imágenes Docker para la base de datos y el backend del proyecto (si las imágenes no existen o han cambiado).
+    * **`up`:** Iniciará los contenedores definidos en tu archivo `docker-compose.yml`, incluyendo la base de datos y el backend.
 
-Allows to control access to routes or endpoints of your application. Guards are executed before a request to a given route is processed and can allow or deny access.
+    Una vez que este proceso termine y **si la instalación de las imágenes y el inicio de los contenedores son correctos, podrás acceder a la documentación de Swagger a través del siguiente enlace en tu navegador:**
 
-```bash
-nest g guard <nombre-del-guard> --no-spec
-```
-@Injectable(): This decorator tells the framework that this class can be instantiated and managed by the NestJS dependency container allowing it to be injected into other classes that need it as a dependency.
+    ```
+    http://localhost:4002/api
+    ```
 
-AuthGuard: It is executed before the controllers or route handlers are invoked by checking whether the request includes the necessary information (such as a JWT token in the headers or a valid session) thus allowing or denying access.
-
-canActivate: It is the core of the guard and is executed every time a client attempts to access a protected path. This is where the conditional logic will be implemented to allow or deny access.
-
-```bash
-@Injectable()
-export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    return true;
-  }
-}
-```
-
-## Interceptor
-
-Middleware that acts in the lifecycle of a request. It can intercept, modify and process data before and after it reaches the controller handler.
-
-```bash
-nest g interceptor <nombre-de-la-carpeta>/<nombre-del-interceptor> --flat --no-spec
-```
-
-@Injectable(): This decorator tells the framework that this class can be instantiated and managed by the NestJS dependency container allowing it to be injected into other classes that need it as a dependency.
-
-Constructor: It is mainly used to perform dependency injection as services, repositories, or any other class registered in the NestJS dependency container and to initialize variables, set defaults or perform necessary operations before the interceptor processes requests.
-
-intercept: It is the core where the logic to be executed before and/or after a request is processed by a controller is defined.
-
-- context: ExecutionContext: It provides access to the execution context of the request by obtaining information about the controller, method, request, response, and other metadata.
-
-- next: CallHandler: It represents the execution flow by returning an Observable<any> observable that represents the data that will finally be sent as a response to the client.
-
-```bash
-@Injectable()
-export class LoggingInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle();
-  }
-}
-```
-
-## Service
-
-```bash
-nest generate service <nombre-del-service> --no-spec
-```
-
-@Injectable(): This decorator indicates that this service can be instantiated and managed by the NestJS dependency container allowing it to be injected into other components such as controllers or other services.
-
-logger: Used to detail how information is recorded within the service.
-
-Methods: The methods must be detailed separately and their parameters must explain what type of data they receive to include the logic of the service, the interaction with the database and the call to other services.
-
-```bash
-@Injectable()
-export class MyNewService {
-    private readonly logger = new Logger("MyNewService");
-
-    constructor(private readonly myService: MyService) {}
-
-    async handleEntries(data: any) {
-        try {
-            const result = await this.myService.processData(data);
-            return result;
-        } catch (error) {
-            this.logger.error(error);
-            throw new InternalServerErrorException('Error occurred while processing data');
-        }
-    }
-}
-```
-
-## Entity
-
+¡Listo! Con estas instrucciones, deberías poder iniciar el proyecto Conexa Backend tanto en tu entorno local como utilizando Docker. Recuerda seguir los pasos para la configuración inicial de la base de datos la primera vez que ejecutes el proyecto.

@@ -1,22 +1,34 @@
 // Libraries
-import { Controller, Post, Body, UseGuards, Headers, BadRequestException, Put } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Headers,
+  BadRequestException,
+  Put,
+  Get,
+  Query,
+} from "@nestjs/common";
 // import { CommandBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 
 // services
-import { Base64Service } from "src/common/service/base64.service";
-import { ArgonService } from "src/common/service/argon2.service";
+import { Base64Service } from "../../common/service/base64.service";
+import { ArgonService } from "../../common/service/argon2.service";
+import { StarwarsService } from "../../common/service/starwars.service";
 
 // Repository
 import { UserRepository } from "../../repositories/user/repositories/user.repository";
 
 // DTO
-import { CreateUserDto } from "./dto/administration-panel";
-import { CredentialAuthDto } from "src/common/dto/global.dto";
+import { CreateUserDto, MovieByIdDto } from "./dto/administration-panel";
+import { CredentialAuthDto } from "../../common/dto/global.dto";
+import { UserUpdateDto } from "../../repositories/user/dto/user.dto";
 
 // swagger
 import { readApiValidateField } from "../../infrastructure/documentation/command/swagger.command";
-import { ApiSwaggerResponse } from "src/infrastructure/documentation/decorators/swagger-decorator";
+import { ApiSwaggerResponse } from "../../infrastructure/documentation/decorators/swagger-decorator";
 
 // constant
 import * as CONSTANTS_GLOBAL_ERROR from "../../common/constants/global/error.json";
@@ -28,31 +40,29 @@ const controllerPath = "administration-panel";
 export class AdministrationPanelController {
   constructor(
     private readonly userRepository: UserRepository,
-    // private readonly commandBus: CommandBus,
     private readonly argonService: ArgonService,
     private readonly base64Service: Base64Service,
+    private readonly starwarsService: StarwarsService
   ) {}
 
   @Post("create-user")
   @ApiSwaggerResponse(readApiValidateField("create-user", controllerPath))
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   async createUser(
     @Body() createUserDto: CreateUserDto,
     @Headers() credentialAuthDto: CredentialAuthDto
   ) {
     if (!credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth])
       throw new BadRequestException(CONSTANTS_GLOBAL_ERROR.credentialAuth);
-    const password = this.base64Service.decodeBase64(credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]);
+    const password = this.base64Service.decodeBase64(
+      credentialAuthDto[CONSTANTS_GLOBAL_HEADERS.credentialAuth]
+    );
     const passwordEncrypt = await this.argonService.hashPassword(password);
-    await this.userRepository.create({ ...createUserDto, password: passwordEncrypt });
+    await this.userRepository.create({
+      ...createUserDto,
+      password: passwordEncrypt,
+    });
     return true;
-    //TODO: CQRS
-    // return await this.commandBus.execute(new CreateUserCommand(
-    //   createUserDto.name,
-    //   createUserDto.nickName,
-    //   createUserDto.email,
-    //   createUserDto.password,
-    // ));
   }
 
   @Put("update-user")
@@ -72,5 +82,13 @@ export class AdministrationPanelController {
 
     await this.userRepository.updateById({ id }, user);
     return true;
+  }
+
+  @Get("movie-by-id")
+  @ApiSwaggerResponse(readApiValidateField("movie-by-id", controllerPath))
+  async movieById(@Query() movieByIdDto: MovieByIdDto) {
+    const id = movieByIdDto.id;
+    const result = await this.starwarsService.getFilmsById(id);
+    return result;
   }
 }

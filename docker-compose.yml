@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  server:
+    environment:
+      - APP_ENV=local
+    container_name: conexa-back-end
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: base
+    ports:
+      - 4002:4002
+    env_file:
+      - .env
+    depends_on:
+      - conexa_db
+    command: >
+      sh -c "npm run start:dev"
+    volumes:
+      - .:/app
+
+  conexa_db:
+    container_name: conexa_db
+    image: mariadb:11.2.3
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: conexa
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - 3317:3306
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
